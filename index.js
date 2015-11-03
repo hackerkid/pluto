@@ -4,7 +4,7 @@ var toxcore = require('toxcore');
 
 var tox = new toxcore.Tox({
   data: 'epic.tox',
-  pass: 'ninjaisback'
+  pass: 'passphrase'
 });
 
 //var tox = new toxcore.Tox();
