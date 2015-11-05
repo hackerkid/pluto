@@ -1,17 +1,30 @@
+
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+var port = process.env.PORT || 8080;
+
+server.listen(port, function() {
+    console.log('Server listening at port %d', port);
+});
+
+// Routing
+app.use(express.static(__dirname + '/public'));
+
+
 var toxcore = require('toxcore');
 
 // Create a default Tox instance
-
 var tox = new toxcore.Tox({
   data: 'epic.tox',
-  pass: 'passphrase'
+  pass: 'ninjaisback'
 });
-
 //var tox = new toxcore.Tox();
 
 var crypto = new toxcore.ToxEncryptSave();
 
-
+var friend;
 
 tox.bootstrapSync('23.226.230.47', 33445, 'A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074'); // stal
 tox.bootstrapSync('104.219.184.206', 443, '8CD087E31C67568103E8C2A28653337E90E6B8EDA0D765D57C6B5172B4F1F04C'); // Jfreegman
@@ -22,8 +35,13 @@ tox.setStatusMessageSync('I am back!!');
 
 
 
-tox.on('friendRequest', function(e) {
+io.sockets.on('sendchat', function(data) {
+    tox.sendFriendMessageSync(friend, data, 0);
+    console.log(data);
+})
 
+tox.on('friendRequest', function(e) {
+  io.sockets.emit('new_message', 'hello');
   console.log('Friend request from: ' + e.publicKeyHex());
  
   	tox.addFriendNoRequestSync(e.publicKey());
@@ -44,15 +62,13 @@ tox.on('friendRequest', function(e) {
 });
 
 
-tox.on('message', function(e) {
-  //var friendName = tox.getFriendNameSync(e.friend());
-  console.log("normal " + e.message() + " " + e.messageType());
-
-});
 
 tox.on('friendMessage', function(e) {
   var friendName = tox.getFriendNameSync(e.friend());
   console.log(e.friend() + " " + e.message() + " " + e.messageType());
+  friend = e.friend();
+  io.sockets.emit('new_message', friendName, e.message());
+
 
 });
 

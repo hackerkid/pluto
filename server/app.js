@@ -1,10 +1,22 @@
-var app = require('http').createServer()
-var io = require('socket.io')(app);
-
+/*
 var express = require('express');
 var app2 = express();
 app2.use(express.static('public'));
 app2.listen(8080);
+*/
+
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+var port = process.env.PORT || 8080;
+
+server.listen(port, function() {
+    console.log('Server listening at port %d', port);
+});
+
+// Routing
+app.use(express.static(__dirname + '/public'));
 
 var toxcore = require('toxcore');
 var crypto = new toxcore.ToxEncryptSave();
@@ -13,100 +25,121 @@ var fs = require('fs');
 var usernames = {};
 var numUsers = 0;
 
-io.on('connection', function(socket) {
+username = "epic";
+fileName = username + ".tox";
+//fs.exists(fileName, function(exists) {
+
+    console.log(fileName);
+/*
+    if (exists) {
+        tox = new toxcore.Tox({
+            data: fileName,
+            pass: 'ninjaisback'
+        });
+
+    } else {
+        tox = new toxcore.Tox();
+    }
+    */
     
+    console.log("hey");
+    tox = new toxcore.Tox();
 
-    var addedUser = false;
+    tox.bootstrapSync('23.226.230.47', 33445, 'A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074'); // stal
+    tox.bootstrapSync('104.219.184.206', 443, '8CD087E31C67568103E8C2A28653337E90E6B8EDA0D765D57C6B5172B4F1F04C'); // Jfreegman
+
+    tox.setNameSync('Big Hero 6');
+    tox.setStatusMessageSync('I am back!!');
+    console.log('Address: ' + tox.getAddressHexSync());
 
 
+            tox.on('friendMessage', function(e) {
+                var friendName = tox.getFriendNameSync(e.friend());
 
-	socket.emit('start');    
-    socket.on('add_user', function(username) {
-    	console.log("hey");
+                console.log(e.friend() + " " + e.message() + " " + e.messageType());
 
-        fileName = username + ".tox";
-        fs.exists(fileName, function(exists) {
-            if (exists) {
-                tox = new toxcore.Tox({
-                    data: fileName,
-                    pass: 'ninjaisback'
+                socket.emit('new_message', {
+                    username: friendName,
+                    message: e.message()
                 });
-            } else {
-                tox = new toxcore.Tox();
-            }
 
 
-        	tox.bootstrapSync('23.226.230.47', 33445, 'A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074'); // stal
-			tox.bootstrapSync('104.219.184.206', 443, '8CD087E31C67568103E8C2A28653337E90E6B8EDA0D765D57C6B5172B4F1F04C'); // Jfreegman
+            });
 
-			tox.setNameSync(username);
-			tox.setStatusMessageSync('I am back!!');
+            tox.on('friendRequest', function(e) {
 
-			tox.on('friendRequest', function(e) {
+                console.log('Friend request from: ' + e.publicKeyHex());
 
-        	console.log('Friend request from: ' + e.publicKeyHex());
+                tox.addFriendNoRequestSync(e.publicKey());
 
-        	tox.addFriendNoRequestSync(e.publicKey());
+                tox.getSavedata(function(err, data) {
 
-        	tox.getSavedata(function(err, data) {
-
-            	if (!err) {
-              	  crypto.encryptFile('epic.tox', data, 'ninjaisback', function(err) {
-                 	   if (!err) console.log('Success!');
-                	    else console.error(err);
-                	});
-            	} else console.error(err);
-       		 });
+                    if (!err) {
+                        crypto.encryptFile('epic.tox', data, 'ninjaisback', function(err) {
+                            if (!err) console.log('Success!');
+                            else console.error(err);
+                        });
+                    } else console.error(err);
+                });
 
 
-        	console.log("Friend request accepted");
+                console.log("Friend request accepted");
 
-   		 	});
+            });
 
-    
-
-
-		tox.on('friendMessage', function(e) {
-        	var friendName = tox.getFriendNameSync(e.friend());
-
-        	console.log(e.friend() + " " + e.message() + " " + e.messageType());
-
-       		socket.broadcast.emit('new_message', {
-            	username: friendName,
-            	message: e.message()
-       	 	});
+/*
+    io.on('connection', function(socket) {
 
 
-    	});
+        	var addedUser = false;
+        	var username = "";
 
-        });
+        	socket.emit('start');
+            socket.emit('new_message', "check");
 
-		socket.username = username;
-        usernames[username] = username;
-        ++numUsers;
-        addedUser = true;
-        
-        socket.emit('login', {
-            numUsers: numUsers
-        });
-        
-        socket.broadcast.emit('user joined', {
-            username: socket.username,
-            numUsers: numUsers
-        });
-    });
+            tox.on('friendRequest', function(e) {
 
-    socket.on('typing', function() {
-        socket.broadcast.emit('typing', {
-            username: socket.username
-        });
-    });
+                console.log('Friend request from: ' + e.publicKeyHex());
 
-    socket.on('stop typing', function() {
-        socket.broadcast.emit('stop typing', {
-            username: socket.username
-        });
-    });
+                tox.addFriendNoRequestSync(e.publicKey());
+
+                tox.getSavedata(function(err, data) {
+
+                    if (!err) {
+                        crypto.encryptFile('epic.tox', data, 'ninjaisback', function(err) {
+                            if (!err) console.log('Success!');
+                            else console.error(err);
+                        });
+                    } else console.error(err);
+                });
+
+
+                console.log("Friend request accepted");
+
+            });
+
+
+
+
+            tox.on('friendMessage', function(e) {
+                var friendName = tox.getFriendNameSync(e.friend());
+
+                console.log(e.friend() + " " + e.message() + " " + e.messageType());
+
+                socket.emit('new_message', {
+                    username: friendName,
+                    message: e.message()
+                });
+
+
+            });
+
+
+
+    socket.username = username;
+    usernames[username] = username;
+    ++numUsers;
+    addedUser = true;
 
     socket.on('disconnect', function() {
         if (addedUser) {
@@ -120,4 +153,5 @@ io.on('connection', function(socket) {
         }
     });
 });
-
+});
+*/
