@@ -20,6 +20,7 @@ var tox = new toxcore.Tox({
   data: 'epic.tox',
   pass: 'ninjaisback'
 });
+
 //var tox = new toxcore.Tox();
 
 var crypto = new toxcore.ToxEncryptSave();
@@ -67,11 +68,29 @@ tox.on('friendMessage', function(e) {
   var friendName = tox.getFriendNameSync(e.friend());
   console.log(e.friend() + " " + e.message() + " " + e.messageType());
   friend = e.friend();
+  console.log(friend);
   io.sockets.emit('new_message', friendName, e.message());
-
 
 });
 
+io.on('connection', function(socket) {
+    
+    socket.on('sendchat', function(data) {
+       tox.sendFriendMessageSync(0, data, 0);
+    	console.log(data);
+    });
+
+    socket.on('addFriends', function (address) {
+    	message = "epic";
+    	console.log("friend going to be added" + address + message);
+    	tox.addFriend(address, message, function() {
+    		console.log("friend added");
+    	});
+    });
+});
+
+var count = tox.getFriendListSizeSync();
+console.log("count is "+ count);
 
 console.log('Address: ' + tox.getAddressHexSync());
 
