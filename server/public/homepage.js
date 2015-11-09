@@ -14,7 +14,13 @@ var socket = io.connect('http://localhost:8080');
 
     // listener, whenever the server emits 'updatechat', this updates the chat body
     socket.on('new_message', function (username, data) {
-        $('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+        //$('#conversation').append('<b>'+username + ':</b> ' + data + '<br>');
+
+        var mem = '<div class="demo-card-wide mdl-card mdl-shadow--2dp"><div class="mdl-card__title"><h2 class="mdl-card__title-text">' + username + '  </h2></div><div class="mdl-card__supporting-text"> ' + data + '</div></div> <br>';
+        
+        $('#conversation').append(mem);
+        
+
     });
     
     

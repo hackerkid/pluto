@@ -1,10 +1,17 @@
-
+var config = require("./config");
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 8080;
+var levelup = require('levelup')
+var db = levelup('./mydb')
+var hyperlog = require('hyperlog')
 
+var l1 = hyperlog(db);
+
+
+console.log(config.PASS_PHRASE);
 server.listen(port, function() {
     console.log('Server listening at port %d', port);
 });
@@ -18,7 +25,7 @@ var toxcore = require('toxcore');
 // Create a default Tox instance
 var tox = new toxcore.Tox({
   data: 'epic.tox',
-  pass: 'ninjaisback'
+  pass: config.PASS_PHRASE
 });
 
 //var tox = new toxcore.Tox();
@@ -63,7 +70,7 @@ tox.on('friendRequest', function(e) {
 });
 
 
-
+/*
 tox.on('friendMessage', function(e) {
   var friendName = tox.getFriendNameSync(e.friend());
   console.log(e.friend() + " " + e.message() + " " + e.messageType());
@@ -72,7 +79,35 @@ tox.on('friendMessage', function(e) {
   io.sockets.emit('new_message', friendName, e.message());
 
 });
+*/
 
+tox.on('friendMessage', function(e) {
+  	
+  	var friendName = tox.getFriendNameSync(e.friend());
+  	console.log(e.friend() + " " + e.message() + " " + e.messageType());
+  	friend = e.friend();
+  	console.log(friend);
+  	io.sockets.emit('new_message', friendName, e.message());
+
+  	/*
+  	var l2 = e;
+
+	var s1 = l1.createReplicationStream()
+	var s2 = l2.createReplicationStream()
+
+	s2.pipe(s1).pipe(s2);
+
+	l1.createReadStream({live: true})
+  	.on('data', function (data) {
+     // since this is a live read stream this is called every time data is added to the l1
+     var val = JSON.parse(data.value.toString())
+     console.log(val.username + '>' + val.message)
+  	})
+
+*/
+    
+
+});
 io.on('connection', function(socket) {
     
     socket.on('sendchat', function(data) {
@@ -89,11 +124,56 @@ io.on('connection', function(socket) {
     });
 });
 
+var count = 0;
+
 var count = tox.getFriendListSizeSync();
+
+
+
 console.log("count is "+ count);
 
 console.log('Address: ' + tox.getAddressHexSync());
 
+
+
+setInterval(function () {
+  tox.getSavedata(function(err, data) {
+    
+    if (!err) {
+      crypto.encryptFile('epic.tox', data, 'ninjaisback', function(err) {
+        if (!err) console.log('Success!');
+          else console.error(err);
+        });
+      } else console.error(err);
+    });
+
+
+  	
+  	console.log(count);
+  	for (var i = 0; i < count; i++) {
+		
+		
+		console.log("time for " + i);
+
+		message = "hey guys";
+		var address = tox.getFriendPublicKeyHexSync(i);
+		var name = tox.getFriendNameSync(i);
+		var status = tox.getFriendConnectionStatusSync(i);
+		console.log("Chance of "+ name + " " + address + "is " + status);
+		if(status == 2) {
+			tox.sendFriendMessageSync(i, message, 0);
+		}
+/*
+		tox.addFriend(address, message, function(num) {
+			//console.log("sending to " + name);
+			//tox.sendFriendMessageSync(i, message, 0);
+			
+		});
+*/		
+
+	}
+
+}, 60 * 50)
 
 
 // Start!
