@@ -7,8 +7,8 @@ var port = process.env.PORT || 8080;
 var levelup = require('levelup')
 var db = levelup('./mydb')
 var hyperlog = require('hyperlog')
+var lib = require('./lib');
 
-var l1 = hyperlog(db);
 
 
 console.log(config.PASS_PHRASE);
@@ -70,41 +70,45 @@ tox.on('friendRequest', function(e) {
 });
 
 
-/*
-tox.on('friendMessage', function(e) {
-  var friendName = tox.getFriendNameSync(e.friend());
-  console.log(e.friend() + " " + e.message() + " " + e.messageType());
-  friend = e.friend();
-  console.log(friend);
-  io.sockets.emit('new_message', friendName, e.message());
-
-});
-*/
-
 tox.on('friendMessage', function(e) {
   	
   	var friendName = tox.getFriendNameSync(e.friend());
-  	console.log(e.friend() + " " + e.message() + " " + e.messageType());
+  	console.log(e.friend() + " MESSAGE " + e.message() + " " + e.messageType());
   	friend = e.friend();
   	console.log(friend);
-  	io.sockets.emit('new_message', friendName, e.message());
 
-  	/*
-  	var l2 = e;
+  	console.log("messaeg arrived\n");
 
-	var s1 = l1.createReplicationStream()
-	var s2 = l2.createReplicationStream()
+  	var inp = e.message();
+  	
+  	if(lib.IsJsonString(inp)) {
+  		var request = JSON.parse(inp);
 
-	s2.pipe(s1).pipe(s2);
+  		console.log("REQUEST IS " + inp);
 
-	l1.createReadStream({live: true})
-  	.on('data', function (data) {
-     // since this is a live read stream this is called every time data is added to the l1
-     var val = JSON.parse(data.value.toString())
-     console.log(val.username + '>' + val.message)
-  	})
 
-*/
+  		if(request.type == "request") {
+  			console.log("request");
+  			senderId = request.senderId;
+  			lastId = request.lastMessageId;
+
+  			lib.fetch_updates(senderId, lastId, function(result) {
+  				console.log(result);
+  			});
+
+  		}
+
+  		else {
+  			if(request.type == "update") {
+  				console.log("update");
+  			}
+  		}
+
+  
+  		io.sockets.emit('new_message', friendName, e.message());
+  	}
+
+  
     
 
 });
@@ -135,6 +139,7 @@ console.log("count is "+ count);
 console.log('Address: ' + tox.getAddressHexSync());
 
 
+/*
 
 setInterval(function () {
   tox.getSavedata(function(err, data) {
@@ -161,20 +166,16 @@ setInterval(function () {
 		var status = tox.getFriendConnectionStatusSync(i);
 		console.log("Chance of "+ name + " " + address + "is " + status);
 		if(status == 2) {
-			tox.sendFriendMessageSync(i, message, 0);
+			var person = {firstName:"John", lastName:"Doe", age:46};
+			var per = JSON.stringify(person);
+
+			tox.sendFriendMessageSync(i, per, 0);
 		}
-/*
-		tox.addFriend(address, message, function(num) {
-			//console.log("sending to " + name);
-			//tox.sendFriendMessageSync(i, message, 0);
-			
-		});
-*/		
+
 
 	}
 
 }, 60 * 50)
 
-
-// Start!
+*/
 tox.start();
