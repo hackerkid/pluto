@@ -1,5 +1,6 @@
 #Pluto Protocol
-
+ 
+> Implementation details coming soon. For now refer the code. 
 
 ##Requests
 
@@ -9,7 +10,7 @@
 
 ##Send back update
 
-{"type":"update","senderId":"0459216ea1b0577e327a14dc4093befeaac4bc45a56c81ddc089b2a661adf30cis", "data": JSON Updates}
+{"type":"update","senderId":"0459216ea1b0577e327a14dc4093befeaac4bc45a56c81ddc089b2a661adf30c", "data": JSON Updates as explained below}
 
 ##Updates format
 {"type":"message", "messageId": "id of the message", "content": "content of the message"}
@@ -21,6 +22,8 @@
 * function merge_the_new_update(update)
 * function fetch_updates(senderId, lastId, callback)
 * function create_request(senderId, callback)
+* function set_last_id(id,lastId, callback)
+
 
 
 
