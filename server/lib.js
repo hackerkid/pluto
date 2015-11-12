@@ -33,7 +33,7 @@ function merge_the_new_update(update)
 		// insert the new update directly as nothing is present already
 		data = JSON.parse(res);
 
-		f(err) {
+		if(err) {
 			updates.put(id, update, function(err) {
 				if(err) {
 					return console.log("oops something went wrong while saving", err);
@@ -61,12 +61,13 @@ function merge_the_new_update(update)
 
 function fetch_updates(senderId, lastId, callback)
 {	
-	var obj = {};
+	var obj = new Array();
 
 	console.log(senderId + " ========= " + lastId);
 
 	updates.get(senderId, function(err, res) {
 		if(err) {
+			print("error");
 			res = JSON.stringify(obj);
 			callback(res);
 		}
@@ -77,6 +78,7 @@ function fetch_updates(senderId, lastId, callback)
 					obj.push(data[i]);
 				}
 			}
+
 
 			var result = JSON.stringify(obj);
 			callback(result);
@@ -116,5 +118,6 @@ module.exports = {
 	get_last_message_id: get_last_message_id, 
 	merge_the_new_update: merge_the_new_update,
 	fetch_updates: fetch_updates,
-	IsJsonString: IsJsonString
+	IsJsonString: IsJsonString, 
+	updates: updates
 }

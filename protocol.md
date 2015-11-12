@@ -12,7 +12,7 @@
 {"type":"update","senderId":"0459216ea1b0577e327a14dc4093befeaac4bc45a56c81ddc089b2a661adf30cis", "data": JSON Updates}
 
 ##Updates format
-{"type":"message", "messageID": "id of the message", "content": "content of the message"}
+{"type":"message", "messageId": "id of the message", "content": "content of the message"}
 
 
 ##Functions
