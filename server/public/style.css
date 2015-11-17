@@ -1,5 +1,9 @@
 #conversation {
-	position: center;
+	position: absolute;
+	left: 500px;
+	padding-top: 40px;
+	overflow-y: scroll;
+	height:400px;
 }
 
 .demo-card-wide.mdl-card {
@@ -12,4 +16,17 @@
 }
 .demo-card-wide > .mdl-card__menu {
   color: #fff;
+}
+
+#datasend {
+	margin: 10px;
+	position: absolute;
+	left: 920;
+	top: 160;
+
+
+}
+
+#data {
+	font-size: 30px;
 }

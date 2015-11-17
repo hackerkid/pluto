@@ -46,14 +46,14 @@ var socket = io.connect('http://localhost:8080');
 
 $("document").ready(function () {
 
-    $('#fixed-header-drawer-exp').bind("enterKey", function(e) {
-            var search_input = $("#fixed-header-drawer-exp").val()
+    $('#query').bind("enterKey", function(e) {
+            var search_input = $("#query").val()
             alert("hell yeh");
             socket.emit('addFriends', search_input);
         
     });
 
-    $('#fixed-header-drawer-exp').keyup(function(e) {
+    $('#query').keyup(function(e) {
         if (e.keyCode == 13) {
             $(this).trigger("enterKey");
         }
