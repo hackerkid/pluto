@@ -12,6 +12,8 @@ A detailed write-up on how Pluto works will be added to this repo in the near fu
 
 You'll need the newest [io.js](https://iojs.org) and npm (`>= 1.8.1`, `>= 2.8.3`)
 
+You'll also need to install [Tox](https://github.com/irungentoo/toxcore) library. 
+
 ### Build
 
 Clone the sources locally:
