@@ -1,7 +1,10 @@
-# pluto
-> peer to peer decentralized social network
+#pluto
+
+###peer to peer decentralized social network
 
 ![screenshot](server/public/images/example.png)
+
+**Alpha** quality you probably only want to use this if you like to send pull requests fixing things :)
 
 A detailed write-up on how Pluto works will be added to this repo in the near future. For now see the source code.
 
