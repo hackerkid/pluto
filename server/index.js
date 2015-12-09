@@ -108,8 +108,8 @@ tox.on('friendMessage', function(e) {
 
   		if(request.type == "request") {
   			// console.log("deteceted !!!!! request");
-  			senderId = request.senderId;
-  			lastId = request.lastMessageId;
+  			var senderId = request.senderId;
+  			var lastId = request.lastMessageId;
   			//// console.log(senderId.length);
   			//// console.log(myadd.length);
   			if(senderId == myadd) {
@@ -165,9 +165,10 @@ io.on('connection', function(socket) {
    
    	lib.get_last_message_id(myadd, function(count) {
     	obj.type = "message";
-    	var temp =  parseInt(count);
-
-    	obj.messageId =  parseInt(temp) + 1;
+    	var new_count =  parseInt(count);
+      new_count = new_count + 1;
+      var newId = new_count.toString();
+    	obj.messageId =  newId;
     	obj.content = data;
 
       console.log(obj.messageId);
@@ -198,7 +199,7 @@ io.on('connection', function(socket) {
     		}
     	});
 
-    	lib.set_last_id(myadd, 	count + 1, function() {
+    	lib.set_last_id(myadd, 	new_count, function() {
     		// console.log("last message id updated\n");
     	});
 
