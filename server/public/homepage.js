@@ -25,6 +25,10 @@ var socket = io.connect('http://localhost:8080');
     
     
     // on load of page
+    
+
+
+$("document").ready(function () {
     $(function(){
         // when the client clicks SEND
         $('#datasend').click( function() {
@@ -44,16 +48,16 @@ var socket = io.connect('http://localhost:8080');
     });
 
 
-$("document").ready(function () {
-
-    $('#query').bind("enterKey", function(e) {
-            var search_input = $("#query").val()
-            alert("hell yeh");
+// handles the friend request part
+    $('#fixed-header-drawer-exp').bind("enterKey", function(e) {
+            var search_input = $("#fixed-header-drawer-exp").val()
+            alert("Friend Request Send");
             socket.emit('addFriends', search_input);
         
     });
 
-    $('#query').keyup(function(e) {
+//handles the friend request part
+    $('#fixed-header-drawer-exp').keyup(function(e) {
         if (e.keyCode == 13) {
             $(this).trigger("enterKey");
         }

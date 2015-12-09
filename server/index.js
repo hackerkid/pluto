@@ -48,8 +48,8 @@ var friend;
 tox.bootstrapSync('23.226.230.47', 33445, 'A09162D68618E742FFBCA1C2C70385E6679604B2D80EA6E84AD0996A1AC8A074'); // stal
 tox.bootstrapSync('104.219.184.206', 443, '8CD087E31C67568103E8C2A28653337E90E6B8EDA0D765D57C6B5172B4F1F04C'); // Jfreegman
 
-tox.setNameSync('Tony Stark');
-tox.setStatusMessageSync('Iron Man!!!!');
+tox.setNameSync(config.NAME);
+tox.setStatusMessageSync(config.STATUS);
 
 var myadd = tox.getAddressHexSync();
 myadd = myadd.substring(0, 64);
@@ -58,7 +58,7 @@ myadd = myadd.substring(0, 64);
 
 tox.on('friendRequest', function(e) {
   io.sockets.emit('new_message', 'hello');
-  // console.log('Friend request from: ' + e.publicKeyHex());
+   console.log('Friend request from: ' + e.publicKeyHex());
  
   	tox.addFriendNoRequestSync(e.publicKey());
 
@@ -68,7 +68,7 @@ tox.on('friendRequest', function(e) {
       crypto.encryptFile('epic.tox', data, 'ninjaisback', function(err) {
         
         if (!err) {
-           console.log('Success!');
+          // console.log('Success!');
 
         }
         else { 
@@ -216,7 +216,7 @@ io.on('connection', function(socket) {
     	message = "epic";
     	// console.log("friend going to be added" + address + message);
     	tox.addFriend(address, message, function() {
-    		// console.log("friend added");
+    		 console.log("friend request going to be send to " + address);
     	});
     });
 });
@@ -238,7 +238,9 @@ setInterval(function () {
     
     if (!err) {
       crypto.encryptFile('epic.tox', data, 'ninjaisback', function(err) {
-        if (!err)  console.log('Success!');
+         if (!err) {
+          //console.log('Success!');
+        } 
           else console.error(err);
         });
       } else console.error(err);
