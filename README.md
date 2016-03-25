@@ -26,13 +26,13 @@ $ git clone https://github.com/hackerkid/pluto
 Install project dependencies:
 
 ```sh
+$ cd pluto
 $ npm install
 ```
 
 ## Usage
 
 ```sh
-cd pluto/server
-npm start
+$ npm start
 ```
 
