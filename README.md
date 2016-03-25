@@ -33,6 +33,6 @@ $ npm install
 
 ```sh
 cd pluto/server
-node index.js
+npm start
 ```
 
