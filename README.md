@@ -2,7 +2,8 @@
 
 ###peer to peer decentralized social network
 
-![screenshot](https://openclipart.org/image/2400px/svg_to_png/223415/pluto.png)
+<img src="https://openclipart.org/image/2400px/svg_to_png/223415/pluto.png" alt="Drawing" style="width: 20px;"/>
+
 
 **Alpha** quality you probably only want to use this if you like to send pull requests fixing things :)
 
