@@ -1,9 +1,6 @@
-#pluto
-
-###peer to peer decentralized social network
-
-<img src="https://www.moimz.com/images/server/pluto.png" alt="Drawing" style="width: 20px;"/>
-
+<p align="center">
+  <img src="pluto.png" />
+</p>
 
 **Alpha** quality you probably only want to use this if you like to send pull requests fixing things :)
 
